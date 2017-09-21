@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kevlened/copy-webpack-plugin.git"
+    "url": "https://github.com/boazdejong/webpack-plugin-copy.git"
   },
   "keywords": [
     "webpack",
@@ -16,7 +16,7 @@
   ],
   "author": "Len Boyette",
   "license": "MIT",
-  "homepage": "https://github.com/kevlened/copy-webpack-plugin",
+  "homepage": "https://github.com/boazdejong/webpack-plugin-copy.git",
   "dependencies": {
     "bluebird": "^2.10.2",
     "fs-extra": "^0.26.4",
