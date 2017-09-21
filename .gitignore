@@ -1,12 +1,4 @@
 node_modules
 coverage
 dist
-*.log
-.*
-!.gitignore
-!.npmignore
-!.babelrc
-!.travis.yml
-!.eslintrc.json
-!tests/helpers/directory/.dottedfile
 compiled_tests

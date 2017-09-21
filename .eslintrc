@@ -1,0 +1,11 @@
+{
+  "extends": "eslint-config-airbnb-base",
+  "rules": {
+    "guard-for-in": "off",
+    "no-param-reassign": "off",
+    "no-throw-literal": "off",
+    "no-plusplus": "off",
+    "no-bitwise": "off",
+    "import/no-extraneous-dependencies": "off"
+  }
+}
