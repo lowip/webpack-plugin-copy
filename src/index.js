@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import fs from 'fs-extra';
+import path from 'path';
 import Promise from 'bluebird';
 import preProcessPattern from './preProcessPattern';
 import processPattern from './processPattern';
@@ -107,6 +109,22 @@ const WebpackPluginCopy = (patterns = [], options = {}) => {
         } else {
           debug(`adding ${context} to change tracking`);
           compilation.contextDependencies.push(context);
+        }
+      });
+
+      // Copy permissions for files that requested it
+      let output = compiler.options.output.path;
+      if (output === '/' &&
+        compiler.options.devServer &&
+        compiler.options.devServer.outputPath) {
+        output = compiler.options.devServer.outputPath;
+      }
+
+      _.forEach(written, (value) => {
+        if (value.copyPermissions) {
+          debug(`restoring permissions to ${value.webpackTo}`);
+          const mask = fs.constants.S_IRWXU | fs.constants.S_IRWXG | fs.constants.S_IRWXO;
+          fs.chmodSync(path.join(output, value.webpackTo), value.perms & mask);
         }
       });
 

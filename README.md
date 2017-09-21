@@ -29,6 +29,7 @@ A pattern looks like:
 | `ignore` | N | [] | Additional globs to ignore for this pattern |
 | `transform` | N | function(content, path) {<br>&nbsp;&nbsp;return content;<br>} | Function that modifies file contents before writing to webpack |
 | `force` | N | false | Overwrites files already in compilation.assets (usually added by other plugins) |
+| `copyPermissions` | N | false | Applies source file permissions to destination files |
 
 #### Available options:
 
@@ -56,19 +57,19 @@ module.exports = {
         new CopyWebpackPlugin([
             // {output}/file.txt
             { from: 'from/file.txt' },
-            
+
             // {output}/to/file.txt
             { from: 'from/file.txt', to: 'to/file.txt' },
-            
+
             // {output}/to/directory/file.txt
             { from: 'from/file.txt', to: 'to/directory' },
 
             // Copy directory contents to {output}/
             { from: 'from/directory' },
-            
+
             // Copy directory contents to {output}/to/directory/
             { from: 'from/directory', to: 'to/directory' },
-            
+
             // Copy glob results to /absolute/path/
             { from: 'from/directory/**/*', to: '/absolute/path' },
 
@@ -87,14 +88,14 @@ module.exports = {
                 from: '**/*',
                 to: '/absolute/path'
             },
-            
+
             // {output}/file/without/extension
             {
                 from: 'path/to/file.txt',
                 to: 'file/without/extension',
                 toType: 'file'
             },
-            
+
             // {output}/directory/with/extension.ext/file.txt
             {
                 from: 'path/to/file.txt',
@@ -105,7 +106,7 @@ module.exports = {
             ignore: [
                 // Doesn't copy any files with a txt extension    
                 '*.txt',
-                
+
                 // Doesn't copy any file, even if they start with a dot
                 '**/*',
 
