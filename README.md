@@ -1,4 +1,7 @@
-## Copy Webpack Plugin
+## This is a fork of [Copy Webpack Plugin](https://github.com/kevlened/copy-webpack-plugin)
+Primarily forked to add the option to copy file permissions
+
+## Webpack Plugin Copy
 
 This is a [webpack](http://webpack.github.io/) plugin that copies individual files or entire directories to the build directory.
 
@@ -7,12 +10,12 @@ This is a [webpack](http://webpack.github.io/) plugin that copies individual fil
 Install the plugin:
 
 ```
-npm install --save-dev copy-webpack-plugin
+npm install --save-dev webpack-plugin-copy
 ```
 
 ### Usage
 
-`new CopyWebpackPlugin([patterns], options)`
+`new WebpackPluginCopy([patterns], options)`
 
 A pattern looks like:
 `{ from: 'source', to: 'dest' }`
@@ -29,6 +32,7 @@ A pattern looks like:
 | `ignore` | N | [] | Additional globs to ignore for this pattern |
 | `transform` | N | function(content, path) {<br>&nbsp;&nbsp;return content;<br>} | Function that modifies file contents before writing to webpack |
 | `force` | N | false | Overwrites files already in compilation.assets (usually added by other plugins) |
+| `copyPermissions` | N | false | Applies source file permissions to destination files |
 
 #### Available options:
 
@@ -41,7 +45,7 @@ A pattern looks like:
 ### Examples
 
 ```javascript
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+var WebpackPluginCopy = require('webpack-plugin-copy');
 var path = require('path');
 
 module.exports = {
@@ -53,22 +57,22 @@ module.exports = {
         outputPath: path.join(__dirname, 'build')
     },
     plugins: [
-        new CopyWebpackPlugin([
+        new WebpackPluginCopy([
             // {output}/file.txt
             { from: 'from/file.txt' },
-            
+
             // {output}/to/file.txt
             { from: 'from/file.txt', to: 'to/file.txt' },
-            
+
             // {output}/to/directory/file.txt
             { from: 'from/file.txt', to: 'to/directory' },
 
             // Copy directory contents to {output}/
             { from: 'from/directory' },
-            
+
             // Copy directory contents to {output}/to/directory/
             { from: 'from/directory', to: 'to/directory' },
-            
+
             // Copy glob results to /absolute/path/
             { from: 'from/directory/**/*', to: '/absolute/path' },
 
@@ -87,14 +91,14 @@ module.exports = {
                 from: '**/*',
                 to: '/absolute/path'
             },
-            
+
             // {output}/file/without/extension
             {
                 from: 'path/to/file.txt',
                 to: 'file/without/extension',
                 toType: 'file'
             },
-            
+
             // {output}/directory/with/extension.ext/file.txt
             {
                 from: 'path/to/file.txt',
@@ -105,7 +109,7 @@ module.exports = {
             ignore: [
                 // Doesn't copy any files with a txt extension    
                 '*.txt',
-                
+
                 // Doesn't copy any file, even if they start with a dot
                 '**/*',
 
@@ -123,8 +127,6 @@ module.exports = {
 ```
 
 ### Testing
-
-[![Build Status](https://travis-ci.org/kevlened/copy-webpack-plugin.svg?branch=master)](https://travis-ci.org/kevlened/copy-webpack-plugin)
 
 Run `npm test`
 
@@ -146,7 +148,7 @@ See [this issue](https://github.com/kevlened/copy-webpack-plugin/issues/59#issue
 
 #### This doesn't copy my files with webpack-dev-server
 
-Starting in version [3.0.0](https://github.com/kevlened/copy-webpack-plugin/blob/master/CHANGELOG.md#300-may-14-2016), we stopped using fs to copy files to the filesystem and started depending on webpack's [in-memory filesystem](https://webpack.github.io/docs/webpack-dev-server.html#content-base):
+This plugin is not using fs to copy files to the filesystem but is depending on webpack's [in-memory filesystem](https://webpack.github.io/docs/webpack-dev-server.html#content-base):
 
 > ... webpack-dev-server will serve the static files in your build folder. It’ll watch your source files for changes and when changes are made the bundle will be recompiled. **This modified bundle is served from memory at the relative path specified in publicPath (see API)**. It will not be written to your configured output directory.
 
