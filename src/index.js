@@ -1,5 +1,5 @@
-import Promise from 'bluebird';
 import _ from 'lodash';
+import Promise from 'bluebird';
 import preProcessPattern from './preProcessPattern';
 import processPattern from './processPattern';
 

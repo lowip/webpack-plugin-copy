@@ -1,8 +1,6 @@
-import Promise from 'bluebird';
 import loaderUtils from 'loader-utils';
 import path from 'path';
-
-const fs = Promise.promisifyAll(require('fs')); // eslint-disable-line import/no-commonjs
+import fs from 'fs-extra';
 
 export default function writeFile(globalRef, pattern, file) {
   const {
@@ -14,7 +12,7 @@ export default function writeFile(globalRef, pattern, file) {
     copyUnmodified
   } = globalRef;
 
-  return fs.statAsync(file.absoluteFrom)
+  return fs.stat(file.absoluteFrom)
     .then((stat) => {
       // We don't write empty directories
       if (stat.isDirectory()) {
@@ -27,7 +25,7 @@ export default function writeFile(globalRef, pattern, file) {
       }
 
       info(`reading ${file.absoluteFrom} to write to assets`);
-      return fs.readFileAsync(file.absoluteFrom)
+      return fs.readFile(file.absoluteFrom)
         .then((content) => {
           if (pattern.transform) {
             content = pattern.transform(content, file.absoluteFrom);

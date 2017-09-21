@@ -19,7 +19,7 @@
   "homepage": "https://github.com/boazdejong/webpack-plugin-copy.git",
   "dependencies": {
     "bluebird": "^2.10.2",
-    "fs-extra": "^0.26.4",
+    "fs-extra": "^4.0.2",
     "glob": "^6.0.4",
     "is-glob": "^3.1.0",
     "loader-utils": "^0.2.15",
