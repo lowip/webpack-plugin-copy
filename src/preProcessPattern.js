@@ -5,9 +5,9 @@ import path from 'path';
 import isGlob from 'is-glob';
 
 // https://www.debuggex.com/r/VH2yS2mvJOitiyr3
-var isTemplateLike = /(\[ext\])|(\[name\])|(\[path\])|(\[folder\])|(\[emoji(:\d+)?\])|(\[(\w+:)?hash(:\w+)?(:\d+)?\])|(\[\d+\])/;
+const isTemplateLike = /(\[ext\])|(\[name\])|(\[path\])|(\[folder\])|(\[emoji(:\d+)?\])|(\[(\w+:)?hash(:\w+)?(:\d+)?\])|(\[\d+\])/;
 
-export default function preProcessPattern(globalRef, pattern) {
+export default (globalRef, pattern) => {
   const {
     info,
     debug,
@@ -15,7 +15,7 @@ export default function preProcessPattern(globalRef, pattern) {
     context,
     fileDependencies,
     contextDependencies,
-    compilation
+    compilation,
   } = globalRef;
 
   pattern = _.cloneDeep(pattern);
@@ -82,13 +82,13 @@ export default function preProcessPattern(globalRef, pattern) {
         contextDependencies.push(pattern.absoluteFrom);
         pattern.absoluteFrom = path.join(pattern.absoluteFrom, '**/*');
         pattern.fromArgs = {
-          dot: true
+          dot: true,
         };
       } else if (stat.isFile()) {
         pattern.fromType = 'file';
         pattern.context = path.dirname(pattern.absoluteFrom);
         pattern.fromArgs = {
-          dot: true
+          dot: true,
         };
         fileDependencies.push(pattern.absoluteFrom);
       } else if (!pattern.fromType) {
@@ -96,4 +96,4 @@ export default function preProcessPattern(globalRef, pattern) {
       }
       return pattern;
     });
-}
+};

@@ -3,7 +3,7 @@ import Promise from 'bluebird';
 import preProcessPattern from './preProcessPattern';
 import processPattern from './processPattern';
 
-function WebpackPluginCopy(patterns = [], options = {}) {
+const WebpackPluginCopy = (patterns = [], options = {}) => {
   if (!Array.isArray(patterns)) {
     throw new Error('[copy-webpack-plugin] patterns must be an array');
   }
@@ -26,7 +26,7 @@ function WebpackPluginCopy(patterns = [], options = {}) {
       level = level || 1;
     }
     if (level <= debugLevelIndex) {
-      console.log('[copy-webpack-plugin] ' + msg); // eslint-disable-line no-console
+      console.log(`[copy-webpack-plugin] + ${msg}`); // eslint-disable-line no-console
     }
   }
 
@@ -66,7 +66,7 @@ function WebpackPluginCopy(patterns = [], options = {}) {
         output: compiler.options.output.path,
         ignore: options.ignore || [],
         copyUnmodified: options.copyUnmodified,
-        concurrency: options.concurrency
+        concurrency: options.concurrency,
       };
 
       if (globalRef.output === '/' &&
@@ -75,17 +75,11 @@ function WebpackPluginCopy(patterns = [], options = {}) {
         globalRef.output = compiler.options.devServer.outputPath;
       }
 
-      Promise.each(patterns, (pattern) => {
-          // Identify absolute source of each pattern and destination type
-          return preProcessPattern(globalRef, pattern)
-            .then((pattern) => {
-              // Every source (from) is assumed to exist here
-              return processPattern(globalRef, pattern);
-            });
-        })
-        .catch((err) => {
-          compilation.errors.push(err);
-        })
+      // Identify absolute source of each pattern and destination type
+      Promise.each(patterns, pattern => preProcessPattern(globalRef, pattern)
+        // Every source (from) is assumed to exist here
+        .then(pattern => processPattern(globalRef, pattern))) // eslint-disable-line no-shadow
+        .catch(err => compilation.errors.push(err))
         .finally(callback);
     });
 
@@ -121,9 +115,9 @@ function WebpackPluginCopy(patterns = [], options = {}) {
   };
 
   return {
-    apply
+    apply,
   };
-}
+};
 
-WebpackPluginCopy['default'] = WebpackPluginCopy;
+WebpackPluginCopy.default = WebpackPluginCopy;
 module.exports = WebpackPluginCopy;

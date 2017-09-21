@@ -9,14 +9,14 @@ export default function writeFile(globalRef, pattern, file) {
     compilation,
     fileDependencies,
     written,
-    copyUnmodified
+    copyUnmodified,
   } = globalRef;
 
   return fs.stat(file.absoluteFrom)
     .then((stat) => {
       // We don't write empty directories
       if (stat.isDirectory()) {
-        return;
+        return Promise.resolve();
       }
 
       // If this came from a glob, add it to the file watchlist
@@ -31,13 +31,13 @@ export default function writeFile(globalRef, pattern, file) {
             content = pattern.transform(content, file.absoluteFrom);
           }
 
-          var hash = loaderUtils.getHashDigest(content);
+          const hash = loaderUtils.getHashDigest(content);
 
           if (pattern.toType === 'template') {
             info(`interpolating template '${file.webpackTo}' for '${file.relativeFrom}'`);
 
             // A hack so .dotted files don't get parsed as extensions
-            let basename = path.basename(file.relativeFrom);
+            const basename = path.basename(file.relativeFrom);
             let dotRemoved = false;
             if (basename[0] === '.') {
               dotRemoved = true;
@@ -57,17 +57,19 @@ export default function writeFile(globalRef, pattern, file) {
               file.relativeFrom = path.sep + file.relativeFrom;
             }
 
-            file.webpackTo = loaderUtils.interpolateName({
-                resourcePath: file.relativeFrom
+            file.webpackTo = loaderUtils.interpolateName(
+              {
+                resourcePath: file.relativeFrom,
               },
               file.webpackTo, {
-                content
-              });
+                content,
+              },
+            );
 
             // Add back removed dots
             if (dotRemoved) {
-              let newBasename = path.basename(file.webpackTo);
-              file.webpackTo = path.dirname(file.webpackTo) + '/.' + newBasename;
+              const newBasename = path.basename(file.webpackTo);
+              file.webpackTo = `${path.dirname(file.webpackTo)}/.${newBasename}`;
             }
           }
 
@@ -75,12 +77,12 @@ export default function writeFile(globalRef, pattern, file) {
             written[file.absoluteFrom] && written[file.absoluteFrom][hash]) {
             info(`skipping '${file.webpackTo}', because it hasn't changed`);
             return;
-          } else {
-            debug(`added ${hash} to written tracking for '${file.absoluteFrom}'`);
-            written[file.absoluteFrom] = {
-              [hash]: true
-            };
           }
+
+          debug(`added ${hash} to written tracking for '${file.absoluteFrom}'`);
+          written[file.absoluteFrom] = {
+            [hash]: true,
+          };
 
           if (compilation.assets[file.webpackTo] && !file.force) {
             info(`skipping '${file.webpackTo}', because it already exists`);
@@ -89,12 +91,12 @@ export default function writeFile(globalRef, pattern, file) {
 
           info(`writing '${file.webpackTo}' to compilation assets from '${file.absoluteFrom}'`);
           compilation.assets[file.webpackTo] = {
-            size: function() {
+            size() {
               return stat.size;
             },
-            source: function() {
+            source() {
               return content;
-            }
+            },
           };
         });
     });

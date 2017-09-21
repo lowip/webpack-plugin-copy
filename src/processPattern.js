@@ -11,10 +11,10 @@ export default function processPattern(globalRef, pattern) {
     info,
     debug,
     output,
-    concurrency
+    concurrency,
   } = globalRef;
   const globArgs = _.assign({
-    cwd: pattern.context
+    cwd: pattern.context,
   }, pattern.fromArgs || {});
 
   if (pattern.fromType === 'nonexistent') {
@@ -26,7 +26,7 @@ export default function processPattern(globalRef, pattern) {
     .map((fileFrom) => {
       const file = {
         force: pattern.force,
-        absoluteFrom: path.resolve(pattern.context, fileFrom)
+        absoluteFrom: path.resolve(pattern.context, fileFrom),
       };
       file.relativeFrom = path.relative(pattern.context, file.absoluteFrom);
 
@@ -43,7 +43,7 @@ export default function processPattern(globalRef, pattern) {
 
         let globParams = {
           dot: true,
-          matchBase: true
+          matchBase: true,
         };
 
         let glob;
@@ -59,11 +59,10 @@ export default function processPattern(globalRef, pattern) {
 
         debug(`testing ${glob} against ${file.relativeFrom}`);
         if (minimatch(file.relativeFrom, glob, globParams)) {
-          info(`ignoring '${file.relativeFrom}', because it matches the ignore glob '${glob}'`);
-          return;
-        } else {
-          debug(`${glob} doesn't match ${file.relativeFrom}`);
+          return info(`ignoring '${file.relativeFrom}', because it matches the ignore glob '${glob}'`);
         }
+
+        debug(`${glob} doesn't match ${file.relativeFrom}`);
       }
 
       // Change the to path to be relative for webpack
@@ -90,6 +89,6 @@ export default function processPattern(globalRef, pattern) {
 
       return writeFile(globalRef, pattern, file);
     }, {
-      concurrency: concurrency || 100
+      concurrency: concurrency || 100,
     }); // This is usually less than file read maximums while staying performant
 }
