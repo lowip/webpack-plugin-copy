@@ -98,7 +98,7 @@ const WebpackPluginCopy = (patterns = [], options = {}) => {
           debug(`not adding ${file} to change tracking, because it's already tracked`);
         } else {
           debug(`adding ${file} to change tracking`);
-          compilation.fileDependencies.push(file);
+          compilation.fileDependencies.add(file);
         }
       });
 
